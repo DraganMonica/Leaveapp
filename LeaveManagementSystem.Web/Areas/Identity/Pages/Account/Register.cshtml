@@ -1,0 +1,84 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+
+<div class="d-flex align-items-center justify-content-center w-100">
+            <div class="row justify-content-center w-100">
+                <div class="col-md-10 col-lg-8 col-xl-6">
+                    <div class="card mb-0">
+                        <div class="card-body">
+                            <div class="text-center mb-3">
+                                <img src="~/images/register.svg" class="mb-3" style="width:150px;">
+                            </div>
+                            <h2 class="text-center">Create a new account.</h2>
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                <div asp-validation-summary="All" class="text-danger"></div>
+                                <div class="mb-4">
+                                    <label asp-for="Input.Email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" asp-for="Input.Email" aria-describedby="emailHelp">
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Input.FirstName"  class="form-label">First Name</label>
+                                    <input type="text" class="form-control" asp-for="Input.FirstName" aria-describedby="textHelp">
+                                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Input.LastName" class="form-label">Last Name</label>
+                                    <input type="text" class="form-control" asp-for="Input.LastName" aria-describedby="textHelp">
+                                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Input.DateOfBirth" class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" asp-for="Input.DateOfBirth">
+                                    <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Input.Password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" asp-for="Input.Password">
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
+                                    <label asp-for="Input.ConfirmPassword" class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" asp-for="Input.ConfirmPassword">
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
+                                    @foreach (var role in Model.Input.RoleNames)
+                                    {
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="Input.RoleName" value="@role" />
+                                            <label class="form-check-label" asp-for="Input.RoleName">@role</label>
+                                        </div>
+                                    }
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign Up</button>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script>
+    $(function(){
+        $("Input.DateOfBirth").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "yy-mm-dd"
+        });
+    });
+</script>
