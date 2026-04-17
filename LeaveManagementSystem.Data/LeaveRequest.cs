@@ -6,7 +6,7 @@
         public DateOnly EndDate { get; set; }
 
 
-        //am nevoie de o relatie intre leave request si leave type
+        //am nevoie de o relatie intre leaverequest si leavetype
         public LeaveType? LeaveType { get; set; }
         public int LeaveTypeId { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using LeaveManagementSystem.Application.Validators;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel;
 
 namespace LeaveManagementSystem.Application.Models.LeaveRequests
@@ -18,8 +19,10 @@ namespace LeaveManagementSystem.Application.Models.LeaveRequests
         public int LeaveTypeId { get; set; }
 
         [DisplayName("Additional Information")]
-        [StringLength(250)]
-        public string? RequestComments { get; set; }
+        [Required(ErrorMessage = "The justification for your leave request is required.")]
+        [StringLength(250, MinimumLength = 10, ErrorMessage = "The justification must be between 10 and 250 characters.")]
+        [ValidTextAttribute(ErrorMessage = "Please enter a valid justification (no repeated characters).")]
+        public string RequestComments { get; set; }=string.Empty;
         public SelectList? LeaveTypes { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

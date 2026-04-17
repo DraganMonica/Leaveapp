@@ -7,4 +7,5 @@ namespace LeaveManagementSystem.Application.Models.LeaveTypes
         [Display(Name = "Maximum Number of Days")]
         public int NumberOfDays { get; set; }
     }
+
 }

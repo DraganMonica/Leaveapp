@@ -40,6 +40,19 @@
                                 </ul>
                             </li>
                         }
+                        @if (User.IsInRole(Roles.Manager))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="managerDropdown"
+                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Manager
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                                    <li><a class="dropdown-item" asp-controller="LeaveAllocation" asp-action="Index">Team Allocations</a></li>
+                                    <li><a class="dropdown-item" asp-controller="LeaveRequests" asp-action="ListRequests">Manage Requests</a></li>
+                                </ul>
+                            </li>
+                        }
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">

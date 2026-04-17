@@ -98,13 +98,13 @@ namespace LeaveManagementSystem.Web.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
             [Display(Name = "First Name")]
             public string FirstName { get; set; }
 
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
 
@@ -113,6 +113,12 @@ namespace LeaveManagementSystem.Web.Areas.Identity.Pages.Account
             [Display(Name = "Date of Birth")]
             public DateTime? DateOfBirth { get; set; }
 
+            [Required]
+            [DataType(DataType.Date)]
+            [Display(Name = "Date of Employment")]
+            public DateOnly? DateOfEmployment { get; set; }
+
+            [Required]
             public string RoleName { get; set; }
             public string[] RoleNames { get; set; }
         }
@@ -142,20 +148,27 @@ namespace LeaveManagementSystem.Web.Areas.Identity.Pages.Account
                 user.DateOfBirth = Input.DateOfBirth.Value;
                 user.FirstName = Input.FirstName;
                 user.LastName = Input.LastName;
-
+                user.DateOfEmployment = Input.DateOfEmployment.Value;
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
                     if (Input.RoleName == Roles.Manager)
                     {
                         await _userManager.AddToRolesAsync(user, new[] { Roles.Employee, Roles.Manager });
+                    }
+                    else if (Input.RoleName == Roles.GeneralManager)
+                    {
+                        // GeneralManager nu e si Employee
+                        await _userManager.AddToRoleAsync(user, Roles.GeneralManager);
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, Roles.Employee);
                     }
+
                     var userId = await _userManager.GetUserIdAsync(user);
                     await _leaveAllocationsService.AllocateLeave(userId);
 
@@ -174,7 +187,7 @@ namespace LeaveManagementSystem.Web.Areas.Identity.Pages.Account
 
                     var messageBody=template
                         .Replace("{UserName}", $"{Input.FirstName} {Input.LastName}")
-                        .Replace("{{MessageContent}}", $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
+                        .Replace("{MessageContent}", $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",messageBody);
 

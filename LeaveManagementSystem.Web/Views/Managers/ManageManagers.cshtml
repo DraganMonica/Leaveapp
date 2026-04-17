@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Manage Managers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Managers for @ViewBag.GeneralManagerName</h4>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">Assigned Managers</div>
+    <div class="card-body">
+        @if (((List<LeaveManagementSystem.Application.Models.Managers.ManagerVM>)ViewBag.AssignedManagers).Count == 0)
+        {
+            <p class="text-muted">No managers assigned yet.</p>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in (List<LeaveManagementSystem.Application.Models.Managers.ManagerVM>)ViewBag.AssignedManagers)
+                    {
+                        <tr>
+                            <td>@m.FirstName @m.LastName</td>
+                            <td>@m.Email</td>
+                            <td>
+                                <form method="post" asp-action="RemoveManagerFromGM">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="generalManagerId" value="@ViewBag.GeneralManagerId" />
+                                    <input type="hidden" name="managerId" value="@m.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Add Manager</div>
+    <div class="card-body">
+        <form method="post" asp-action="AddManagerToGM">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="generalManagerId" value="@ViewBag.GeneralManagerId" />
+            <div class="d-flex gap-2">
+                <select name="managerId" class="form-select">
+                    <option value="">-- Select Manager --</option>
+                    @foreach (SelectListItem item in ViewBag.UnassignedManagers)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+    </div>
+</div>

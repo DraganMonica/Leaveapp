@@ -37,6 +37,12 @@ namespace LeaveManagementSystem.Data.Migrations
                     b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateOnly>("DateOfEmployment")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -87,6 +93,8 @@ namespace LeaveManagementSystem.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -102,8 +110,9 @@ namespace LeaveManagementSystem.Data.Migrations
                         {
                             Id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4ca0d39e-03b4-4ec8-acb7-e989be549a5f",
-                            DateOfBirth = new DateTime(2003, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "00161dac-fdd1-41dd-bea9-d69e4725c145",
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DateOfEmployment = new DateOnly(2024, 1, 1),
                             Email = "admin@leaveapp.com",
                             EmailConfirmed = true,
                             FirstName = "Default",
@@ -111,12 +120,49 @@ namespace LeaveManagementSystem.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@LEAVEAPP.COM",
                             NormalizedUserName = "ADMIN@LEAVEAPP.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECOg15Pum4ol8FzfBNnsRl+N6QF39vLTBJo2o3a1oTPYjqnJP9muDeGJxWva71g5SA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJzxKSuVmcdod7T/jyCmOh1CYDfGUKowQwzKQyOU52I6+qUDA1J1ww55Sa1ai2heZA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f33a1461-0b8c-4848-a434-a551b093766b",
+                            SecurityStamp = "d9ef2eab-7a3c-4b67-9a43-6e66f1561d1c",
                             TwoFactorEnabled = false,
                             UserName = "admin@leaveapp.com"
                         });
+                });
+
+            modelBuilder.Entity("LeaveManagementSystem.Data.Department", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("LeaveManagementSystem.Data.GeneralManagerManager", b =>
+                {
+                    b.Property<string>("GeneralManagerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ManagerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("GeneralManagerId", "ManagerId");
+
+                    b.HasIndex("ManagerId");
+
+                    b.ToTable("GeneralManagerManagers");
                 });
 
             modelBuilder.Entity("LeaveManagementSystem.Data.LeaveAllocation", b =>
@@ -277,6 +323,29 @@ namespace LeaveManagementSystem.Data.Migrations
                     b.ToTable("Periods");
                 });
 
+            modelBuilder.Entity("LeaveManagementSystem.Data.PublicHoliday", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PublicHolidays");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -321,6 +390,12 @@ namespace LeaveManagementSystem.Data.Migrations
                             Id = "65ad5989-4367-46e3-a137-09005de811a4",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
+                        },
+                        new
+                        {
+                            Id = "852ed64d-8e5d-457d-91ad-db26f73ca258",
+                            Name = "GeneralManager",
+                            NormalizedName = "GENERALMANAGER"
                         });
                 });
 
@@ -441,6 +516,45 @@ namespace LeaveManagementSystem.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LeaveManagementSystem.Data.ApplicationUser", b =>
+                {
+                    b.HasOne("LeaveManagementSystem.Data.Department", "Department")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("LeaveManagementSystem.Data.Department", b =>
+                {
+                    b.HasOne("LeaveManagementSystem.Data.ApplicationUser", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Manager");
+                });
+
+            modelBuilder.Entity("LeaveManagementSystem.Data.GeneralManagerManager", b =>
+                {
+                    b.HasOne("LeaveManagementSystem.Data.ApplicationUser", "GeneralManager")
+                        .WithMany()
+                        .HasForeignKey("GeneralManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LeaveManagementSystem.Data.ApplicationUser", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("GeneralManager");
+
+                    b.Navigation("Manager");
+                });
+
             modelBuilder.Entity("LeaveManagementSystem.Data.LeaveAllocation", b =>
                 {
                     b.HasOne("LeaveManagementSystem.Data.ApplicationUser", "Employee")
@@ -550,6 +664,11 @@ namespace LeaveManagementSystem.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LeaveManagementSystem.Data.Department", b =>
+                {
+                    b.Navigation("Employees");
                 });
 
             modelBuilder.Entity("LeaveManagementSystem.Data.LeaveType", b =>

@@ -1,0 +1,71 @@
+﻿@model LeaveManagementSystem.Data.Department
+@{
+    ViewData["Title"] = "Manage Employees";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Manage Employees - @Model.Name</h4>
+    <a asp-action="Index" class="btn btn-secondary">Back</a>
+</div>
+
+<!-- Angajați curenti în departament -->
+<div class="card mb-4">
+    <div class="card-header">Current Employees</div>
+    <div class="card-body">
+        @if (Model.Employees == null || !Model.Employees.Any())
+        {
+            <p class="text-muted">No employees in this department.</p>
+        }
+        else
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var emp in Model.Employees)
+                    {
+                        <tr>
+                            <td>@emp.FirstName @emp.LastName</td>
+                            <td>@emp.Email</td>
+                            <td>
+                                <form method="post" asp-action="RemoveEmployee">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="departmentId" value="@Model.Id" />
+                                    <input type="hidden" name="employeeId" value="@emp.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!-- Adaugă angajat nou -->
+<div class="card">
+    <div class="card-header">Add Employee</div>
+    <div class="card-body">
+        <form method="post" asp-action="AddEmployee">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="departmentId" value="@Model.Id" />
+            <div class="d-flex gap-2">
+                <select name="employeeId" class="form-select">
+                    <option value="">-- Select Employee --</option>
+                    @foreach (SelectListItem item in ViewBag.UnassignedEmployees)
+                    {
+                        <option value="@item.Value">@item.Text</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+    </div>
+</div>

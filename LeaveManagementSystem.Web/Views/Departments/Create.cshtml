@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Create Department";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>Create Department</h4>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Manager (optional)</label>
+        <select name="managerId" class="form-control">
+            <option value="">-- No Manager --</option>
+            @foreach (SelectListItem item in ViewBag.Managers)
+            {
+                <option value="@item.Value">@item.Text</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

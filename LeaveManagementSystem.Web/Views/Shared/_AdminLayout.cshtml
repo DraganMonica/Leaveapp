@@ -73,7 +73,44 @@
                             <li class="sidebar-item">
                                 <a class="sidebar-link primary-hover-bg" asp-controller="LeaveAllocation" asp-action="Index" aria-expanded="false">
                                     <iconify-icon icon="solar:bookmark-square-minimalistic-line-duotone"></iconify-icon>
-                                    <span class="hide-menu">View Employees</span>
+                                    <span class="hide-menu">View All Employees</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="LeaveRequests" asp-action="ListRequests" aria-expanded="false">
+                                    <iconify-icon icon="solar:file-text-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">Manage Requests</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="Departments" asp-action="Index">
+                                    <iconify-icon icon="solar:buildings-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">Departments</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link" asp-controller="PublicHolidays" asp-action="Index">
+                                    <iconify-icon icon="solar:calendar-mark-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">Public Holidays</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="Managers" asp-action="Index">
+                                    <iconify-icon icon="solar:users-group-rounded-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">Managers</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.IsInRole(Roles.Manager))
+                        {
+                            <li class="nav-small-cap">
+                                <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
+                                <span class="hide-menu">Management</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="LeaveAllocation" asp-action="Index" aria-expanded="false">
+                                    <iconify-icon icon="solar:bookmark-square-minimalistic-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">Team</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
@@ -83,7 +120,28 @@
                                 </a>
                             </li>
                         }
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.IsInRole(Roles.GeneralManager))
+                        {
+                            <li class="nav-small-cap">
+                                <iconify-icon icon="solar:menu-dots-linear" class="nav-small-cap-icon fs-4"></iconify-icon>
+                                <span class="hide-menu">Management</span>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="Managers" asp-action="MyManagers">
+                                    <iconify-icon icon="solar:users-group-rounded-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">My Managers</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a class="sidebar-link primary-hover-bg" asp-controller="LeaveRequests" asp-action="ListRequests">
+                                    <iconify-icon icon="solar:file-text-line-duotone"></iconify-icon>
+                                    <span class="hide-menu">Manage Requests</span>
+                                </a>
+                            </li>
+                        }
+                        @if (User.Identity.IsAuthenticated &&
+                            !User.IsInRole(Roles.Administrator) &&
+                            !User.IsInRole(Roles.GeneralManager))
                         {
                             
                             <li class="sidebar-item">

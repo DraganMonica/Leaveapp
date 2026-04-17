@@ -1,0 +1,24 @@
+﻿@model List<LeaveManagementSystem.Application.Models.Managers.ManagerVM>
+@{
+    ViewData["Title"] = "My Managers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>My Managers</h4>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>@m.FirstName @m.LastName</td>
+                <td>@m.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>

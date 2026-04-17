@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -17,12 +16,6 @@ namespace LeaveManagementSystem.Data
             base.OnModelCreating(builder);
            
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-            //var  mai curatica
-            //builder.ApplyConfiguration(new LeaveRequestStatusConfiguration());
-            //builder.ApplyConfiguration(new IdentityRoleConfiguration());
-            //builder.ApplyConfiguration(new ApplicationUserConfiguration());
-            //builder.ApplyConfiguration(new IdentityUserRoleConfiguration());
-
 
         }
         public DbSet<LeaveType> LeaveTypes { get; set; }
@@ -30,5 +23,8 @@ namespace LeaveManagementSystem.Data
         public DbSet<Period> Periods { get; set; }
         public DbSet<LeaveRequestStatus>LeaveRequestStatuses { get; set; }
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<PublicHoliday> PublicHolidays { get; set; }
+        public DbSet<GeneralManagerManager> GeneralManagerManagers { get; set; }
     }
 }

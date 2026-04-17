@@ -11,6 +11,8 @@ namespace LeaveManagementSystem.Application.Services.LeaveRequests
         Task CancelLeaveRequest(int id);
         Task ReviewLeaveRequest(int leaveRequestId, bool approved);
         Task <bool> RequestDatesExceedAllocation(LeaveRequestCreateVM model);
+        Task<bool> RequestHasNoWorkingDays(LeaveRequestCreateVM model);
         Task<ReviewLeaveRequestVM> GetLeaveRequestForReview(int id);
+        Task<bool> HasOverlappingRequest(LeaveRequestCreateVM model);
     }
 }

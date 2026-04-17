@@ -1,5 +1,4 @@
-﻿
-using LeaveManagementSystem.Data;
+﻿using LeaveManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -7,6 +6,7 @@ namespace LeaveManagementSystem.Application.Services.Periods
 {
     public class PeriodsService(ApplicationDbContext _context) : IPeriodsService
     {
+        // imi da perioada curenta in functie de data curenta  - efectiv imi anul curent
         public async Task<Period> GetCurrentPeriod()
         {
             var currentDate=DateTime.Now;

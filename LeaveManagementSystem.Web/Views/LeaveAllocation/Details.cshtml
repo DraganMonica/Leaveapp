@@ -1,10 +1,15 @@
-﻿@model EmployeeAllocationVM
+﻿@using LeaveManagementSystem.Common.Static
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<LeaveManagementSystem.Data.ApplicationUser> UserManager
 
+@model EmployeeAllocationVM
 @{
     ViewData["Title"] = "View Allocations";
     Layout = "_AdminLayout";
     var isAdmin = User.IsInRole(Roles.Administrator);
     var isEmployee = User.IsInRole(Roles.Employee);
+    var currentUserId = UserManager.GetUserId(User);
+    var isOwnProfile = currentUserId == Model.Id;
     string message = isAdmin ? "There are no allocations" : "You have no allocations, please contact your Administrator.";
 }
 
@@ -15,7 +20,7 @@
     <a asp-action="Index" class="btn btn-primary">Back to List</a>
     <br />
 }
-@if (isEmployee)
+@if (isEmployee && isOwnProfile)
 {
     <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-primary">View Request History</a>
     <br />
@@ -91,12 +96,22 @@
                                 <span class="badge bg-warning text-dark">@allocation.Days</span>
                             </td>
 
+                            
                             <td>
                                 @if (isAdmin)
                                 {
                                     <a class="btn btn-warning" asp-action="EditAllocation" asp-route-id="@allocation.Id">Edit Allocation</a>
                                 }
-                                <a asp-controller="LeaveRequests" asp-action="Create" asp-route-leaveTypeId="@allocation.LeaveType.Id" class="btn btn-success btn-sm">Request Leave</a>
+                                @if (isOwnProfile)
+                                {
+                                    <a asp-controller="LeaveRequests"
+                                       asp-action="Create"
+                                       asp-route-allocationId="@allocation.Id"
+                                       class="btn btn-success btn-sm">
+                                        Request Leave
+                                    </a>
+                                }
+                            
                             </td>
                         </tr>
                     }

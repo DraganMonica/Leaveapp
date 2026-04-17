@@ -1,10 +1,22 @@
-﻿
-@model IEnumerable<LeaveRequestListVM>
+﻿@model IEnumerable<LeaveRequestListVM>
 
 @{
     ViewData["Title"] = "Leave Request List";
 }
 <h1>Index</h1>
+
+
+@*declanseaza anularea cererii
+
+-daca exista un mesaj de eroare din backend, il afiseaza în UI ca alert rosu*@
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+
+
+
 
 <p>
     <a asp-action="Create" class="btn btn-primary">Request Leave</a>
@@ -65,9 +77,14 @@
                     <span class="badge rounded-pill bg-@className">@item.LeaveRequestStatus.ToString()</span>
                 </td>
                 <td>
-                    @if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending)
+                    @if (item.CanCancel)
                     {
-                        <button data-id="@item.Id" class="btn btn-danger cancelBtn"> Cancel</button>
+                        <button data-id="@item.Id" class="btn btn-danger cancelBtn">Cancel</button>
+                    }
+                    else if (item.LeaveRequestStatus == LeaveRequestStatusEnum.Pending ||
+                    item.LeaveRequestStatus == LeaveRequestStatusEnum.Approved)
+                    {
+                        <span class="text-muted small">Cancellation not available</span>
                     }
                 </td>
             </tr>

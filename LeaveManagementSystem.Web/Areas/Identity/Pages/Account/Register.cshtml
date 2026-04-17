@@ -38,6 +38,11 @@
                                     <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
                                 </div>
                                 <div class="mb-4">
+                                    <label asp-for="Input.DateOfEmployment" class="form-label"></label>
+                                    <input type="date" class="form-control" asp-for="Input.DateOfEmployment">
+                                    <span asp-validation-for="Input.DateOfEmployment" class="text-danger"></span>
+                                </div>
+                                <div class="mb-4">
                                     <label asp-for="Input.Password" class="form-label">Password</label>
                                     <input type="password" class="form-control" asp-for="Input.Password">
                                     <span asp-validation-for="Input.Password" class="text-danger"></span>

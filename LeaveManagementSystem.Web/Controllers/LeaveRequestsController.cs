@@ -1,7 +1,4 @@
-﻿using LeaveManagementSystem.Application.Models.LeaveRequests;
-using LeaveManagementSystem.Application.Services.LeaveRequests;
-using LeaveManagementSystem.Application.Services.LeaveTypes;
-using Microsoft.AspNetCore.Mvc;
+﻿using LeaveManagementSystem.Application.Services.LeaveTypes;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LeaveManagementSystem.Web.Controllers;
@@ -34,17 +31,29 @@ public class LeaveRequestsController(ILeaveTypesService _leaveTypesService, ILea
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LeaveRequestCreateVM model)
     {
-        //validate that the days don't exceed the allocation
-        if (await _leaveRequestsService.RequestDatesExceedAllocation(model)) 
+        if (await _leaveRequestsService.HasOverlappingRequest(model))
+        {
+            ModelState.AddModelError(string.Empty, "You already have a leave request for this period.");
+        }
+
+        if (await _leaveRequestsService.RequestHasNoWorkingDays(model))
+        {
+            ModelState.AddModelError(string.Empty,
+                "The selected period does not contain any working days (weekends or public holidays).");
+        }
+
+        if (await _leaveRequestsService.RequestDatesExceedAllocation(model))
         {
             ModelState.AddModelError(string.Empty, "You have exceeded your allocation");
-            ModelState.AddModelError(nameof(model.EndDate), "The number of days requested is invalid.");
+            ModelState.AddModelError(nameof(model.EndDate), "The number of requested days exceeds your available balance.");
         }
+
         if (ModelState.IsValid)
         {
             await _leaveRequestsService.CreateLeaveRequest(model);
             return RedirectToAction(nameof(Index));
         }
+
         var leaveTypes = await _leaveTypesService.GetAll();
         model.LeaveTypes = new SelectList(leaveTypes, "Id", "Name");
         return View(model);
@@ -55,12 +64,19 @@ public class LeaveRequestsController(ILeaveTypesService _leaveTypesService, ILea
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Cancel(int id)
     {
-        await _leaveRequestsService.CancelLeaveRequest(id);
+        try
+        {
+            await _leaveRequestsService.CancelLeaveRequest(id);
+        }
+        catch (InvalidOperationException ex)
+        {
+            TempData["ErrorMessage"] = ex.Message;
+        }
         return RedirectToAction(nameof(Index));
     }
 
-    //admin/manager review requests
-    [Authorize(Policy ="AdminManagerOnly")]
+
+    [Authorize(Roles = $"{Roles.Administrator}, {Roles.Manager}, {Roles.GeneralManager}")]
     public async Task<IActionResult> ListRequests()
     {
         var model= await _leaveRequestsService.AdminGetAllLeaveRequests();

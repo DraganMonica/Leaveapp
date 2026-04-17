@@ -1,0 +1,47 @@
+﻿@model LeaveManagementSystem.Application.Models.Managers.CreateManagerVM
+@{
+    ViewData["Title"] = "Create Manager";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>Create Manager</h4>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label>First Name</label>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Last Name</label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Date of Birth</label>
+        <input type="date" name="DateOfBirth" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Date of Employment</label>
+        <input type="date" name="DateOfEmployment" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Password</label>
+        <input asp-for="Password" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Confirm Password</label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

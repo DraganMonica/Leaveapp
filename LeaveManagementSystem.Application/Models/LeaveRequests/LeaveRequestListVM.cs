@@ -21,5 +21,6 @@ namespace LeaveManagementSystem.Application.Models.LeaveRequests
 
         [DisplayName("Status")]
         public LeaveRequestStatusEnum LeaveRequestStatus { get; set; }
+        public bool CanCancel { get; set; }
     }
 }

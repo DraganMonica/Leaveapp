@@ -10,14 +10,14 @@ namespace LeaveManagementSystem.Web.Controllers
     [Authorize]
     public class LeaveAllocationController (ILeaveAllocationsService _leaveAllocationsService, ILeaveTypesService _leaveTypesService): Controller
     {
-        [Authorize(Roles=Roles.Administrator)]
+        [Authorize(Roles = $"{Roles.Administrator},{Roles.Manager},{Roles.GeneralManager}")]
         public async Task<IActionResult> Index()
         {
             var employees = await _leaveAllocationsService.GetEmployees();
             return View(employees);
         }
 
-        [Authorize(Roles = Roles.Administrator)]
+        [Authorize(Roles = $"{Roles.Administrator},{Roles.Manager}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AllocateLeave(string? id)
@@ -26,7 +26,7 @@ namespace LeaveManagementSystem.Web.Controllers
             return RedirectToAction(nameof(Details), new {userId=id});
         }
 
-        [Authorize(Roles = Roles.Administrator)]
+        [Authorize(Roles = $"{Roles.Administrator},{Roles.Manager}")]
         public async Task<IActionResult> EditAllocation(int? id)
         {
             if (id == null)

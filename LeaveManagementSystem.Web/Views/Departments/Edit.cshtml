@@ -1,0 +1,29 @@
+﻿@model LeaveManagementSystem.Data.Department
+@{
+    ViewData["Title"] = "Edit Department";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h4>Edit Department</h4>
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <div class="mb-3">
+        <label>Name</label>
+        <input type="text" name="name" value="@Model.Name" class="form-control" required />
+    </div>
+    <div class="mb-3">
+        <label>Manager</label>
+        <select name="managerId" class="form-select">
+            <option value="">-- No Manager --</option>
+            @foreach (SelectListItem item in ViewBag.Managers)
+            {
+                <option value="@item.Value" selected="@(item.Value == Model.ManagerId)">
+                    @item.Text
+                </option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
