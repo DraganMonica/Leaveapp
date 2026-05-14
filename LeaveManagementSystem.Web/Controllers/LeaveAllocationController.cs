@@ -4,11 +4,12 @@ using LeaveManagementSystem.Application.Services.LeaveTypes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using LeaveManagementSystem.Application.Models.LeaveAllocations;
+using LeaveManagementSystem.Data;
 
 namespace LeaveManagementSystem.Web.Controllers
 {
     [Authorize]
-    public class LeaveAllocationController (ILeaveAllocationsService _leaveAllocationsService, ILeaveTypesService _leaveTypesService): Controller
+    public class LeaveAllocationController (ILeaveAllocationsService _leaveAllocationsService, ILeaveTypesService _leaveTypesService, UserManager<ApplicationUser> _userManager): Controller
     {
         [Authorize(Roles = $"{Roles.Administrator},{Roles.Manager},{Roles.GeneralManager}")]
         public async Task<IActionResult> Index()
@@ -65,9 +66,20 @@ namespace LeaveManagementSystem.Web.Controllers
 
         public async Task<IActionResult> Details(string? userId)
         {
-            
             var employeesVM = await _leaveAllocationsService.GetEmployeeAllocations(userId);
             return View(employeesVM);
+        }
+
+        [Authorize(Roles = Roles.Administrator)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteEmployee(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

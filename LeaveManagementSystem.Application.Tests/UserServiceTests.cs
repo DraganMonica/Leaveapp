@@ -3,6 +3,7 @@ using LeaveManagementSystem.Common.Static;
 using LeaveManagementSystem.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System.Security.Claims;
@@ -56,7 +57,7 @@ public class UserServiceTests
             .Setup(m => m.GetUserAsync(It.IsAny<ClaimsPrincipal>()))
             .ReturnsAsync(_loggedInUser);
 
-        _service = new UserService(_userManagerMock.Object, _httpContextAccessorMock.Object);
+        _service = new UserService(_userManagerMock.Object, _httpContextAccessorMock.Object, Mock.Of<ILogger<UserService>>());
     }
 
 

@@ -139,9 +139,7 @@
                                 </a>
                             </li>
                         }
-                        @if (User.Identity.IsAuthenticated &&
-                            !User.IsInRole(Roles.Administrator) &&
-                            !User.IsInRole(Roles.GeneralManager))
+                        @if (User.Identity.IsAuthenticated)
                         {
                             
                             <li class="sidebar-item">

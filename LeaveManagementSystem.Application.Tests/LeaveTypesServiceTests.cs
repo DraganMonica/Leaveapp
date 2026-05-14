@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using LeaveManagementSystem.Application.MappingProfiles;
 using LeaveManagementSystem.Application.Models.LeaveTypes;
 using LeaveManagementSystem.Application.Services.LeaveTypes;
 using LeaveManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -27,17 +30,13 @@ public class LeaveTypesServiceTests
         _context = new ApplicationDbContext(options);
 
         
-        var mapperConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<LeaveType, LeaveTypeReadOnlyVM>();
-            cfg.CreateMap<LeaveType, LeaveTypeEditVM>().ReverseMap();
-            cfg.CreateMap<LeaveTypeCreateVM, LeaveType>();
-        });
-        _mapper = mapperConfig.CreateMapper();
+        var services = new ServiceCollection();
+        services.AddAutoMapper(cfg => { }, typeof(LeaveTypeAutoMapperProfile).Assembly);
+        _mapper = services.BuildServiceProvider().GetRequiredService<IMapper>();
 
-        // Mock pentru ILogger, nu ne intereseaza comportamentul lui in aceste teste
-        var logger = new Mock<ILogger<LeaveTypesService>>().Object;
-        _service = new LeaveTypesService(_context, _mapper, logger);
+        var logger = Mock.Of<ILogger<LeaveTypesService>>();
+        var cache = new MemoryCache(new MemoryCacheOptions());
+        _service = new LeaveTypesService(_context, _mapper, logger, cache);
     }
 
     [TearDown]

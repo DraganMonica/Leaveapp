@@ -18,7 +18,7 @@ namespace LeaveManagementSystem.Application
         //extending the services that we can register in our web application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(cfg => { }, Assembly.GetExecutingAssembly());
             services.AddScoped<ILeaveTypesService, LeaveTypesService>();
             services.AddScoped<ILeaveAllocationsService, LeaveAllocationsService>();
             services.AddScoped<ILeaveRequestsService, LeaveRequestsService>();

@@ -36,9 +36,46 @@
                     @Html.DisplayFor(modelItem => item.Email)
                 </td>
                 <td>
-                    <a asp-action="Details" class="btn btn-primary" asp-route-userId="@item.Id">View Allocations</a> 
+                    <a asp-action="Details" class="btn btn-primary" asp-route-userId="@item.Id">View Allocations</a>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <button class="btn btn-danger ms-2 deleteBtn" data-id="@item.Id" data-name="@item.FirstName @item.LastName">
+                            <i class="bi bi-x-lg"></i> Delete
+                        </button>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<form id="deleteForm" asp-action="DeleteEmployee" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="deleteEmployeeId" />
+</form>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('.deleteBtn').click(function () {
+                var btn = $(this);
+                var name = btn.data("name");
+
+                Swal.fire({
+                    title: "Ești sigur?",
+                    text: "Vrei să ștergi angajatul " + name + "? Această acțiune nu poate fi anulată.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonText: "Anulează",
+                    confirmButtonText: "Da, șterge!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#deleteEmployeeId').val(btn.data("id"));
+                        $('#deleteForm').submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

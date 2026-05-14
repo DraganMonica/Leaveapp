@@ -65,7 +65,7 @@ namespace LeaveManagementSystem.Application.Services
                 //iau toti employees
                 return employees
                     .Where(e =>
-                    //dar sa fie din acelasi departament cu el
+                        currentUser.DepartmentId != null &&
                         e.DepartmentId == currentUser.DepartmentId &&
                         // exclude sa fie el insusi introdus in lista
                         e.Id != currentUser.Id &&

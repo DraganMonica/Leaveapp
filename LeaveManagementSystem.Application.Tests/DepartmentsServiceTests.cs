@@ -3,6 +3,7 @@ using LeaveManagementSystem.Common.Static;
 using LeaveManagementSystem.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -31,7 +32,7 @@ namespace LeaveManagementSystem.Application.Tests
                 null, null, null, null, null, null, null, null
             );
 
-            _service = new DepartmentsService(_context, _userManagerMock.Object);
+            _service = new DepartmentsService(_context, _userManagerMock.Object, Mock.Of<ILogger<DepartmentsService>>());
         }
 
         [TearDown]

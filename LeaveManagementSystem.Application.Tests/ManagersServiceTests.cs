@@ -5,6 +5,7 @@ using LeaveManagementSystem.Common.Static;
 using LeaveManagementSystem.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -36,7 +37,8 @@ public class ManagersServiceTests
         _service = new ManagersService(
             _userManagerMock.Object,
             _leaveAllocationsMock.Object,
-            _context);
+            _context,
+            Mock.Of<ILogger<ManagersService>>());
     }
 
     [TearDown]

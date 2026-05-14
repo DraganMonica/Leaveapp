@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LeaveManagementSystem.Application.MappingProfiles;
 using LeaveManagementSystem.Application.Models.LeaveRequests;
 using LeaveManagementSystem.Application.Services;
 using LeaveManagementSystem.Application.Services.LeaveAllocations;
@@ -8,6 +9,8 @@ using LeaveManagementSystem.Application.Services.PublicHolidays;
 using LeaveManagementSystem.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -43,11 +46,9 @@ public class LeaveRequestsServiceTests
             .Options;
         _context = new ApplicationDbContext(options);
 
-        var mapperConfig = new MapperConfiguration(cfg =>
-        {
-            cfg.CreateMap<LeaveRequestCreateVM, LeaveRequest>();
-        });
-        _mapper = mapperConfig.CreateMapper();
+        var services = new ServiceCollection();
+        services.AddAutoMapper(cfg => { }, typeof(LeaveRequestAutoMapperProfile).Assembly);
+        _mapper = services.BuildServiceProvider().GetRequiredService<IMapper>();
 
         _userServiceMock = new Mock<IUserService>();
         _publicHolidaysMock = new Mock<IPublicHolidaysService>();
@@ -71,7 +72,8 @@ public class LeaveRequestsServiceTests
             _leaveAllocationsMock.Object,
             _publicHolidaysMock.Object,
             _userManagerMock.Object,
-            _managersServiceMock.Object);
+            _managersServiceMock.Object,
+            Mock.Of<ILogger<LeaveRequestsService>>());
     }
 
     [TearDown]

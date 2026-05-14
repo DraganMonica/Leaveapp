@@ -1,6 +1,5 @@
-using LeaveManagementSystem.Data;
-using Microsoft.EntityFrameworkCore;
 using LeaveManagementSystem.Application;
+using LeaveManagementSystem.Data;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,7 +22,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddMemoryCache();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -53,7 +52,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
