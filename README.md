@@ -462,7 +462,8 @@ Dependencies (`DbContext`, `UserManager`, `ILogger`, `IMapper`, `IMemoryCache`) 
 |---|---|
 | ![Landing](docs/screenshots/landing_page.png) | ![Register](docs/screenshots/register.png) |
 
-> The landing page uses `_AdminLayout` — the sidebar is visible with Home, Login, and Register links for unauthenticated users. The Register page uses `_Layout` — a simple form with custom fields: Email, First Name, Last Name, Date of Birth, Date of Employment, and role selection (Employee / Manager / GeneralManager).
+> **Landing page** uses `_AdminLayout` — sidebar visible with Home, Login, and Register for unauthenticated users.
+> **Register page** uses `_Layout` — a simple form extended with custom fields: First Name, Last Name, Date of Birth, Date of Employment, and role selection (Employee / Manager / GeneralManager).
 
 ### Admin views
 
