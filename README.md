@@ -1,7 +1,7 @@
 <div align="center">
   <img src="LeaveManagementSystem.Web/wwwroot/images/calendar.svg" width="180" />
 
-  # Leaveapp
+  # 📅Leaveapp
 
   *Manage employee leave requests with role-based workflows.*
 
