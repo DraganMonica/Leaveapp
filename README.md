@@ -5,144 +5,64 @@
 
   *Manage employee leave requests with role-based workflows.*
 
-  ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet) ![EF Core](https://img.shields.io/badge/EF%20Core-8.0-512BD4) ![NUnit](https://img.shields.io/badge/tests-NUnit-green) ![License](https://img.shields.io/badge/license-MIT-blue)
+  ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet) ![EF Core](https://img.shields.io/badge/EF%20Core-10.0-512BD4) ![NUnit](https://img.shields.io/badge/tests-NUnit-green) ![License](https://img.shields.io/badge/license-MIT-blue)
 </div>
 
 ---
 
-> **Note: This is a demo / learning project**, not a production application.
+> [!NOTE]
+> This is a **demo / learning project**, not a production application.
 > It was built to demonstrate layered architecture, role-based access control, leave workflow management, and unit testing in ASP.NET Core MVC.
 
 **LeaveManagementSystem** is a web application for managing employee leave requests in a company. Employees submit leave requests, managers approve or decline them, and administrators control the entire organizational structure — departments, leave types, periods, and public holidays.
 
 ---
 
-## Table of Contents
+## 📖 Table of Contents
 
-- [Why This Project Matters](#why-this-project-matters)
-- [Overview](#overview)
-- [Screenshots](#screenshots)
-- [Architecture](#architecture)
-- [Tech Stack](#tech-stack)
-- [UI Layouts](#ui-layouts)
-- [Roles and Permissions](#roles-and-permissions)
-- [Features](#features)
-- [How It Works — End to End](#how-it-works--end-to-end)
-- [Leave Allocation Logic](#leave-allocation-logic)
-- [Identity and Authentication](#identity-and-authentication)
-- [Project Structure](#project-structure)
-- [Database Schema](#database-schema)
-- [Running the Project](#running-the-project)
-- [Testing](#testing)
-
+- [🎯 Why This Project Matters](#-why-this-project-matters)
+- [📋 Overview](#-overview)
+- [🏗️ Architecture](#️-architecture)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🎨 UI Layouts](#-ui-layouts)
+- [🔐 Roles and Permissions](#-roles-and-permissions)
+- [⚡ Features](#-features)
+- [🔄 How It Works — End to End](#-how-it-works--end-to-end)
+- [📅 Leave Allocation Logic](#-leave-allocation-logic)
+- [🔑 Identity and Authentication](#-identity-and-authentication)
+- [📁 Project Structure](#-project-structure)
+- [🗄️ Database Schema](#️-database-schema)
+- [🚀 Running the Project](#-running-the-project)
+- [🧪 Testing](#-testing)
+- [📸 Screenshots](#-screenshots)
 
 ---
 
-## Why This Project Matters
+## 🎯 Why This Project Matters
 
 This is not a simple CRUD application. It demonstrates the ability to design and implement a real business workflow end-to-end:
 
-- **Layered architecture** with clear separation of concerns — Web, Application, Data, Common layers each with a single responsibility
-- **Non-trivial business logic** — leave validation chains (overlap check, working days check, allocation balance check), proportional accrual calculation, role-filtered employee visibility
-- **Role-based access control** with 4 roles and granular permission guards on every controller action
-- **ASP.NET Core Identity** scaffolded and extended with custom fields and registration logic
-- **Unit testing** with NUnit + Moq covering all service methods, including edge cases and validation rules
-- **Production-grade tooling** — AutoMapper for clean ViewModel mapping, Serilog for structured logging, IMemoryCache for performance, SweetAlert2 for UX
+- 🏗️ **Layered architecture** with clear separation of concerns — Web, Application, Data, Common layers each with a single responsibility
+- 🧠 **Non-trivial business logic** — leave validation chains (overlap check, working days check, allocation balance check), proportional accrual calculation, role-filtered employee visibility
+- 🔐 **Role-based access control** with 4 roles and granular permission guards on every controller action
+- 🔑 **ASP.NET Core Identity** scaffolded and extended with custom fields and registration logic
+- 🧪 **Unit testing** with NUnit + Moq covering all service methods, including edge cases and validation rules
+- 🛠️ **Production-grade tooling** — AutoMapper for clean ViewModel mapping, Serilog for structured logging, IMemoryCache for performance, SweetAlert2 for UX
 
 ---
 
-## Overview
+## 📋 Overview
 
 LeaveManagementSystem solves the problem of manual leave tracking in organizations. Instead of spreadsheets or paper-based processes, the system provides a structured workflow:
 
-- Employees see their leave balance and submit requests
-- Managers review and approve or decline requests for their team
-- General Managers oversee their assigned managers
-- Administrators manage the full organizational setup
+- 👤 Employees see their leave balance and submit requests
+- 👔 Managers review and approve or decline requests for their team
+- 🏢 General Managers oversee their assigned managers
+- ⚙️ Administrators manage the full organizational setup
 
 ---
 
-## Screenshots
-
-> Screenshots are located in `docs/screenshots/`. Move images from your local folder to that path before sharing the repository.
-
-### Public pages (unauthenticated — `_AdminLayout` sidebar shows Login/Register)
-
-| Landing page | Register |
-|---|---|
-| ![Landing](docs/screenshots/landing_page.png) | ![Register](docs/screenshots/register.png) |
-
-> **Landing page** uses `_AdminLayout` — sidebar visible with Home, Login, and Register for unauthenticated users.
-> **Register page** uses `_Layout` — a simple form extended with custom fields: First Name, Last Name, Date of Birth, Date of Employment, and role selection (Employee / Manager / GeneralManager).
-
-### Admin views
-
-| Departments list | Edit department |
-|---|---|
-| ![Departments](docs/screenshots/admin_departments.png) | ![Edit department](docs/screenshots/edit_department.png) |
-
-> Departments list shows Name, Manager, and employee count. Edit department allows reassigning the manager via dropdown.
-
-| Manage employees in department | Manage employees — add |
-|---|---|
-| ![Employees in dept](docs/screenshots/noadding_employees_departments.png) | ![Add employee](docs/screenshots/add_employees_departments.png) |
-
-> Admin can add or remove employees from a department. The dropdown shows only unassigned employees.
-
-| Leave types | Periods |
-|---|---|
-| ![Leave types](docs/screenshots/admin_leavetype.png) | ![Periods](docs/screenshots/period_admin.png) |
-
-| Public holidays | All employees |
-|---|---|
-| ![Public holidays](docs/screenshots/admin_public_holidays.png) | ![Employees](docs/screenshots/employees_admin.png) |
-
-> Public holidays are configured per year and excluded from working day calculations. The Employees page shows all users across all roles with View Allocations and Delete actions.
-
-| Managers & General Managers |
-|---|
-| ![Managers](docs/screenshots/managers_generalManager.png) |
-
-> Admin sees Managers and General Managers in a single page. Each GM has a Managers button to manage the GM↔Manager hierarchy.
-
-### Employee views
-
-| Leave allocation | View allocations detail |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard_employee.png) | ![Allocation](docs/screenshots/view_allocation_for_employee.png) |
-
-> Employee sees their leave balance per leave type and period — Original Allocation vs Current Allocation remaining. Request Leave button navigates directly to the create form.
-
-| Create leave request | Leave requests overview |
-|---|---|
-| ![Create request](docs/screenshots/create_leaverequest_employee.png) | ![Requests](docs/screenshots/leaverequests_overview.png) |
-
-> Create form takes Start Date, End Date, Leave Type, and optional Additional Information. The overview shows all requests with status badges (Pending, Approved, Cancelled) and summary stats at the top.
-
-### Manager views
-
-| Team (employees list) | Team leave requests |
-|---|---|
-| ![Manager team](docs/screenshots/dashboard_manager_team.png) | ![Team requests](docs/screenshots/team_leave_requests.png) |
-
-> Manager sees only employees from their own department. Team leave requests shows a summary (Total, Approved, Pending, Rejected) and a list with Review button for pending requests.
-
-| Leave request review |
-|---|
-| ![Review](docs/screenshots/leave_request_review.png) |
-
-> Manager reviews a request with full details — employee name, leave type, dates, and comment — then approves or declines.
-
-### Email confirmation flow
-
-| Step 1 — confirmation email sent | Step 2 — email confirmed |
-|---|---|
-| ![SMTP step 1](docs/screenshots/pas1_smtp.png) | ![Confirmed](docs/screenshots/pas2_confirmation.png) |
-
-> New accounts require email confirmation before first login. Email is sent via SMTP (Papercut used for local dev). After clicking the confirmation link, the account is activated.
----
-
-## Architecture
+## 🏗️ Architecture
 
 LeaveManagementSystem follows a **layered architecture** — each layer has a clear responsibility and depends only on the layers beneath it.
 
@@ -180,25 +100,25 @@ LeaveManagementSystem follows a **layered architecture** — each layer has a cl
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Technology | Purpose |
 |---|---|
-| ASP.NET Core 8.0 MVC | Web framework — controllers, Razor views, routing |
-| Entity Framework Core 8.0 | ORM — database access and migrations |
+| ASP.NET Core 10.0 MVC | Web framework — controllers, Razor views, routing |
+| Entity Framework Core 10.0 | ORM — database access and migrations |
 | ASP.NET Core Identity | User management, password hashing, role-based auth |
 | AutoMapper 15 | Entity → ViewModel mapping |
 | Serilog | Structured logging (console + file + Seq) |
 | IMemoryCache | In-memory caching for leave types (30 min TTL) |
 | SweetAlert2 | Confirmation modals (approve / decline / delete) |
-| Bootstrap 5 | UI styling — employee-facing pages |
+| Bootstrap 5 | UI styling — public pages |
 | Spike Free Bootstrap Admin (WrapPixel) | Admin dashboard layout |
 | NUnit + Moq | Unit testing framework |
 | SQL Server (LocalDB) | Database |
 
 ---
 
-## UI Layouts
+## 🎨 UI Layouts
 
 The app uses **two separate layouts** with a clear architectural separation between the public entry point and the authenticated platform.
 
@@ -211,17 +131,18 @@ The app uses **two separate layouts** with a clear architectural separation betw
 
 ---
 
-## Roles and Permissions
+## 🔐 Roles and Permissions
 
 The system has four roles with distinct access levels:
 
 | Role | Description |
 |---|---|
-| **Administrator** | Full access — manages departments, leave types, periods, public holidays, managers, and employees |
-| **GeneralManager** | Sees their assigned managers and the full team leave request list |
-| **Manager** | Sees employees in their department, reviews and approves/declines leave requests |
-| **Employee** | Submits leave requests, views their own allocations and request history |
+| ⚙️ **Administrator** | Full access — manages departments, leave types, periods, public holidays, managers, and employees |
+| 🏢 **GeneralManager** | Sees their assigned managers and the full team leave request list |
+| 👔 **Manager** | Sees employees in their department, reviews and approves/declines leave requests |
+| 👤 **Employee** | Submits leave requests, views their own allocations and request history |
 
+> [!NOTE]
 > A Manager also has the Employee role — they can submit their own leave requests too.
 
 ### Permission matrix
@@ -243,30 +164,30 @@ The system has four roles with distinct access levels:
 
 ---
 
-## Features
+## ⚡ Features
 
-- **Role-based access control** — 4 roles with separate views and permission guards on every controller action
-- **Leave request workflow** — Employee submits → Manager reviews → Approved / Declined / Cancelled
-- **Leave allocation per period** — Days allocated proportionally based on date of employment and current period
-- **Overlap validation** — Cannot submit a new request that overlaps an existing pending/approved one
-- **Working days validation** — Request period must contain at least one working day (excludes weekends and public holidays)
-- **Allocation balance check** — Cannot request more days than the remaining allocation
-- **Department management** — Create departments, assign managers and employees
-- **Leave types management** — Configurable leave types (Annual, Sick, etc.) with max days
-- **Periods** — Annual periods that define the leave year boundaries
-- **Public holidays** — Configurable per year; excluded from working day calculations
-- **General Manager hierarchy** — A GM can be assigned multiple managers and sees their full team
-- **Memory cache** — Leave types cached in memory for 30 minutes to reduce DB calls
-- **Email confirmation** — New accounts require email confirmation before first login
-- **Confirmation modals** — SweetAlert2 dialogs before approve, decline, and delete actions
-- **Structured logging** — Serilog throughout all services (info, warning, error levels)
-- **Unit tests** — NUnit + Moq test suite covering all service methods
+- 🔐 **Role-based access control** — 4 roles with separate views and permission guards on every controller action
+- 🔄 **Leave request workflow** — Employee submits → Manager reviews → Approved / Declined / Cancelled
+- 📅 **Leave allocation per period** — Days allocated proportionally based on date of employment and current period
+- 🚫 **Overlap validation** — Cannot submit a new request that overlaps an existing pending/approved one
+- 📆 **Working days validation** — Request period must contain at least one working day (excludes weekends and public holidays)
+- ⚖️ **Allocation balance check** — Cannot request more days than the remaining allocation
+- 🏢 **Department management** — Create departments, assign managers and employees
+- 📋 **Leave types management** — Configurable leave types (Annual, Sick, etc.) with max days
+- 🗓️ **Periods** — Annual periods that define the leave year boundaries
+- 🎉 **Public holidays** — Configurable per year; excluded from working day calculations
+- 👥 **General Manager hierarchy** — A GM can be assigned multiple managers and sees their full team
+- ⚡ **Memory cache** — Leave types cached in memory for 30 minutes to reduce DB calls
+- 📧 **Email confirmation** — New accounts require email confirmation before first login
+- 🔔 **Confirmation modals** — SweetAlert2 dialogs before approve, decline, and delete actions
+- 📝 **Structured logging** — Serilog throughout all services (info, warning, error levels)
+- 🧪 **Unit tests** — NUnit + Moq test suite covering all service methods
 
 ---
 
-## How It Works — End to End
+## 🔄 How It Works — End to End
 
-### Employee submits a leave request
+### 👤 Employee submits a leave request
 
 ```
 Employee fills in Create Leave Request form
@@ -295,7 +216,7 @@ Employee sees updated status on their Index view
   - can Cancel if still Pending (Approved requests cannot be cancelled)
 ```
 
-### Admin sets up the system
+### ⚙️ Admin sets up the system
 
 ```
 1. Admin creates Leave Types (e.g. Annual Leave — 21 days, Sick Leave — 10 days)
@@ -314,7 +235,7 @@ Employee sees updated status on their Index view
 
 ---
 
-## Leave Allocation Logic
+## 📅 Leave Allocation Logic
 
 When a new user is created (employee or manager), `LeaveAllocationsService.AllocateLeave()` runs immediately:
 
@@ -329,11 +250,12 @@ For each LeaveType in the system:
   6. Save LeaveAllocation { EmployeeId, LeaveTypeId, PeriodId, Days }
 ```
 
-This means an employee hired mid-year gets a proportionally smaller allocation — fair accrual rather than a full-year grant.
+> [!IMPORTANT]
+> An employee hired mid-year gets a proportionally smaller allocation — fair accrual rather than a full-year grant.
 
 ---
 
-## Identity and Authentication
+## 🔑 Identity and Authentication
 
 LeaveManagementSystem uses **ASP.NET Core Identity scaffolded and extended**.
 
@@ -350,7 +272,7 @@ Identity handles password hashing, lockout policies, token generation (for email
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 LeaveManagementSystem/
@@ -377,7 +299,7 @@ LeaveManagementSystem/
 │       │                                       #   Edit, ManageManagers, MyManagers
 │       ├── Periods/                            # Index, Create, Edit, Delete
 │       ├── PublicHolidays/                     # Index, Create
-│       └── Shared/                             # _Layout (employee), _AdminLayout (admin)
+│       └── Shared/                             # _Layout (public), _AdminLayout (authenticated)
 │
 ├── LeaveManagementSystem.Application/          # Business Logic Layer
 │   ├── Services/
@@ -425,7 +347,7 @@ LeaveManagementSystem/
 
 ---
 
-## Database Schema
+## 🗄️ Database Schema
 
 ```
 AspNetUsers (ApplicationUser)
@@ -462,11 +384,11 @@ GeneralManagerManagers
 
 ---
 
-## Running the Project
+## 🚀 Running the Project
 
 ### Prerequisites
 
-- .NET 8 SDK
+- .NET 10 SDK
 - SQL Server (LocalDB is included with Visual Studio)
 - SMTP server for email confirmation — or disable `RequireConfirmedAccount` in `Program.cs` for local dev
 
@@ -515,7 +437,7 @@ Seeded via EF migrations:
 
 ---
 
-## Testing
+## 🧪 Testing
 
 The test project uses **NUnit** and **Moq** with an EF Core in-memory database.
 
@@ -525,12 +447,87 @@ dotnet test
 ```
 
 Each service has its own test class covering:
-- Happy path (expected behavior)
-- Edge cases (empty data, not found, boundary conditions)
-- Validation logic (overlapping requests, working days, allocation exceeded)
+- ✅ Happy path (expected behavior)
+- 🔲 Edge cases (empty data, not found, boundary conditions)
+- ⚠️ Validation logic (overlapping requests, working days, allocation exceeded)
 
 Dependencies (`DbContext`, `UserManager`, `ILogger`, `IMapper`, `IMemoryCache`) are either mocked with Moq or use real in-memory implementations to keep tests fast and isolated.
 
 ---
 
+## 📸 Screenshots
 
+### 🌐 Public pages
+
+| Landing page | Register |
+|---|---|
+| ![Landing](docs/screenshots/landing_page.png) | ![Register](docs/screenshots/register.png) |
+
+> **Landing page** uses `_AdminLayout` — sidebar visible with Home, Login, and Register for unauthenticated users.
+> **Register page** uses `_Layout` — extended form with First Name, Last Name, Date of Birth, Date of Employment, and role selection (Employee / Manager / GeneralManager).
+
+### ⚙️ Admin views
+
+| Departments list | Edit department |
+|---|---|
+| ![Departments](docs/screenshots/admin_departments.png) | ![Edit department](docs/screenshots/edit_department.png) |
+
+> Departments list shows Name, Manager, and employee count. Edit department allows reassigning the manager via dropdown.
+
+| Manage employees in department | Add employee to department |
+|---|---|
+| ![Employees in dept](docs/screenshots/noadding_employees_departments.png) | ![Add employee](docs/screenshots/add_employees_departments.png) |
+
+> Admin can add or remove employees from a department. The dropdown shows only unassigned employees.
+
+| Leave types | Periods |
+|---|---|
+| ![Leave types](docs/screenshots/admin_leavetype.png) | ![Periods](docs/screenshots/period_admin.png) |
+
+| Public holidays | All employees |
+|---|---|
+| ![Public holidays](docs/screenshots/admin_public_holidays.png) | ![Employees](docs/screenshots/employees_admin.png) |
+
+> Public holidays are configured per year and excluded from working day calculations. The Employees page shows all users across all roles with View Allocations and Delete actions.
+
+| Managers & General Managers |
+|---|
+| ![Managers](docs/screenshots/managers_generalManager.png) |
+
+> Admin sees Managers and General Managers in a single page. Each GM has a Managers button to manage the GM↔Manager hierarchy.
+
+### 👤 Employee views
+
+| Leave allocation | View allocations detail |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard_employee.png) | ![Allocation](docs/screenshots/view_allocation_for_employee.png) |
+
+> Employee sees their leave balance per leave type and period — Original Allocation vs Current Allocation remaining. Request Leave button navigates directly to the create form.
+
+| Create leave request | Leave requests overview |
+|---|---|
+| ![Create request](docs/screenshots/create_leaverequest_employee.png) | ![Requests](docs/screenshots/leaverequests_overview.png) |
+
+> Create form takes Start Date, End Date, Leave Type, and optional Additional Information. The overview shows all requests with status badges (Pending, Approved, Cancelled) and summary stats at the top.
+
+### 👔 Manager views
+
+| Team (employees list) | Team leave requests |
+|---|---|
+| ![Manager team](docs/screenshots/dashboard_manager_team.png) | ![Team requests](docs/screenshots/team_leave_requests.png) |
+
+> Manager sees only employees from their own department. Team leave requests shows a summary (Total, Approved, Pending, Rejected) and a list with Review button for pending requests.
+
+| Leave request review |
+|---|
+| ![Review](docs/screenshots/leave_request_review.png) |
+
+> Manager reviews a request with full details — employee name, leave type, dates, and comment — then approves or declines.
+
+### 📧 Email confirmation flow
+
+| Step 1 — confirmation email sent | Step 2 — email confirmed |
+|---|---|
+| ![SMTP step 1](docs/screenshots/pas1_smtp.png) | ![Confirmed](docs/screenshots/pas2_confirmation.png) |
+
+> New accounts require email confirmation before first login. Email is sent via SMTP (Papercut used for local dev). After clicking the confirmation link, the account is activated.
