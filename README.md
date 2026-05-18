@@ -11,7 +11,7 @@
 ---
 
 > [!NOTE]
-> This is a **demo / learning project**, not a production application.
+> Not a production application.
 > It was built to demonstrate layered architecture, role-based access control, leave workflow management, and unit testing in ASP.NET Core MVC.
 
 **LeaveManagementSystem** is a web application for managing employee leave requests in a company. Employees submit leave requests, managers approve or decline them, and administrators control the entire organizational structure — departments, leave types, periods, and public holidays.
