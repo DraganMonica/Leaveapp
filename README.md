@@ -21,6 +21,7 @@
 
 - [Why This Project Matters](#why-this-project-matters)
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [UI Layouts](#ui-layouts)
@@ -33,7 +34,7 @@
 - [Database Schema](#database-schema)
 - [Running the Project](#running-the-project)
 - [Testing](#testing)
-- [Screenshots](#screenshots)
+
 
 ---
 
@@ -59,6 +60,86 @@ LeaveManagementSystem solves the problem of manual leave tracking in organizatio
 - General Managers oversee their assigned managers
 - Administrators manage the full organizational setup
 
+---
+
+## Screenshots
+
+> Screenshots are located in `docs/screenshots/`. Move images from your local folder to that path before sharing the repository.
+
+### Public pages (unauthenticated — `_AdminLayout` sidebar shows Login/Register)
+
+| Landing page | Register |
+|---|---|
+| ![Landing](docs/screenshots/landing_page.png) | ![Register](docs/screenshots/register.png) |
+
+> **Landing page** uses `_AdminLayout` — sidebar visible with Home, Login, and Register for unauthenticated users.
+> **Register page** uses `_Layout` — a simple form extended with custom fields: First Name, Last Name, Date of Birth, Date of Employment, and role selection (Employee / Manager / GeneralManager).
+
+### Admin views
+
+| Departments list | Edit department |
+|---|---|
+| ![Departments](docs/screenshots/admin_departments.png) | ![Edit department](docs/screenshots/edit_department.png) |
+
+> Departments list shows Name, Manager, and employee count. Edit department allows reassigning the manager via dropdown.
+
+| Manage employees in department | Manage employees — add |
+|---|---|
+| ![Employees in dept](docs/screenshots/noadding_employees_departments.png) | ![Add employee](docs/screenshots/add_employees_departments.png) |
+
+> Admin can add or remove employees from a department. The dropdown shows only unassigned employees.
+
+| Leave types | Periods |
+|---|---|
+| ![Leave types](docs/screenshots/admin_leavetype.png) | ![Periods](docs/screenshots/period_admin.png) |
+
+| Public holidays | All employees |
+|---|---|
+| ![Public holidays](docs/screenshots/admin_public_holidays.png) | ![Employees](docs/screenshots/employees_admin.png) |
+
+> Public holidays are configured per year and excluded from working day calculations. The Employees page shows all users across all roles with View Allocations and Delete actions.
+
+| Managers & General Managers |
+|---|
+| ![Managers](docs/screenshots/managers_generalManager.png) |
+
+> Admin sees Managers and General Managers in a single page. Each GM has a Managers button to manage the GM↔Manager hierarchy.
+
+### Employee views
+
+| Leave allocation | View allocations detail |
+|---|---|
+| ![Dashboard](docs/screenshots/dashboard_employee.png) | ![Allocation](docs/screenshots/view_allocation_for_employee.png) |
+
+> Employee sees their leave balance per leave type and period — Original Allocation vs Current Allocation remaining. Request Leave button navigates directly to the create form.
+
+| Create leave request | Leave requests overview |
+|---|---|
+| ![Create request](docs/screenshots/create_leaverequest_employee.png) | ![Requests](docs/screenshots/leaverequests_overview.png) |
+
+> Create form takes Start Date, End Date, Leave Type, and optional Additional Information. The overview shows all requests with status badges (Pending, Approved, Cancelled) and summary stats at the top.
+
+### Manager views
+
+| Team (employees list) | Team leave requests |
+|---|---|
+| ![Manager team](docs/screenshots/dashboard_manager_team.png) | ![Team requests](docs/screenshots/team_leave_requests.png) |
+
+> Manager sees only employees from their own department. Team leave requests shows a summary (Total, Approved, Pending, Rejected) and a list with Review button for pending requests.
+
+| Leave request review |
+|---|
+| ![Review](docs/screenshots/leave_request_review.png) |
+
+> Manager reviews a request with full details — employee name, leave type, dates, and comment — then approves or declines.
+
+### Email confirmation flow
+
+| Step 1 — confirmation email sent | Step 2 — email confirmed |
+|---|---|
+| ![SMTP step 1](docs/screenshots/pas1_smtp.png) | ![Confirmed](docs/screenshots/pas2_confirmation.png) |
+
+> New accounts require email confirmation before first login. Email is sent via SMTP (Papercut used for local dev). After clicking the confirmation link, the account is activated.
 ---
 
 ## Architecture
@@ -452,81 +533,4 @@ Dependencies (`DbContext`, `UserManager`, `ILogger`, `IMapper`, `IMemoryCache`) 
 
 ---
 
-## Screenshots
 
-> Screenshots are located in `docs/screenshots/`. Move images from your local folder to that path before sharing the repository.
-
-### Public pages (unauthenticated — `_AdminLayout` sidebar shows Login/Register)
-
-| Landing page | Register |
-|---|---|
-| ![Landing](docs/screenshots/landing_page.png) | ![Register](docs/screenshots/register.png) |
-
-> **Landing page** uses `_AdminLayout` — sidebar visible with Home, Login, and Register for unauthenticated users.
-> **Register page** uses `_Layout` — a simple form extended with custom fields: First Name, Last Name, Date of Birth, Date of Employment, and role selection (Employee / Manager / GeneralManager).
-
-### Admin views
-
-| Departments list | Edit department |
-|---|---|
-| ![Departments](docs/screenshots/admin_departments.png) | ![Edit department](docs/screenshots/edit_department.png) |
-
-> Departments list shows Name, Manager, and employee count. Edit department allows reassigning the manager via dropdown.
-
-| Manage employees in department | Manage employees — add |
-|---|---|
-| ![Employees in dept](docs/screenshots/noadding_employees_departments.png) | ![Add employee](docs/screenshots/add_employees_departments.png) |
-
-> Admin can add or remove employees from a department. The dropdown shows only unassigned employees.
-
-| Leave types | Periods |
-|---|---|
-| ![Leave types](docs/screenshots/admin_leavetype.png) | ![Periods](docs/screenshots/period_admin.png) |
-
-| Public holidays | All employees |
-|---|---|
-| ![Public holidays](docs/screenshots/admin_public_holidays.png) | ![Employees](docs/screenshots/employees_admin.png) |
-
-> Public holidays are configured per year and excluded from working day calculations. The Employees page shows all users across all roles with View Allocations and Delete actions.
-
-| Managers & General Managers |
-|---|
-| ![Managers](docs/screenshots/managers_generalManager.png) |
-
-> Admin sees Managers and General Managers in a single page. Each GM has a Managers button to manage the GM↔Manager hierarchy.
-
-### Employee views
-
-| Leave allocation | View allocations detail |
-|---|---|
-| ![Dashboard](docs/screenshots/dashboard_employee.png) | ![Allocation](docs/screenshots/view_allocation_for_employee.png) |
-
-> Employee sees their leave balance per leave type and period — Original Allocation vs Current Allocation remaining. Request Leave button navigates directly to the create form.
-
-| Create leave request | Leave requests overview |
-|---|---|
-| ![Create request](docs/screenshots/create_leaverequest_employee.png) | ![Requests](docs/screenshots/leaverequests_overview.png) |
-
-> Create form takes Start Date, End Date, Leave Type, and optional Additional Information. The overview shows all requests with status badges (Pending, Approved, Cancelled) and summary stats at the top.
-
-### Manager views
-
-| Team (employees list) | Team leave requests |
-|---|---|
-| ![Manager team](docs/screenshots/dashboard_manager_team.png) | ![Team requests](docs/screenshots/team_leave_requests.png) |
-
-> Manager sees only employees from their own department. Team leave requests shows a summary (Total, Approved, Pending, Rejected) and a list with Review button for pending requests.
-
-| Leave request review |
-|---|
-| ![Review](docs/screenshots/leave_request_review.png) |
-
-> Manager reviews a request with full details — employee name, leave type, dates, and comment — then approves or declines.
-
-### Email confirmation flow
-
-| Step 1 — confirmation email sent | Step 2 — email confirmed |
-|---|---|
-| ![SMTP step 1](docs/screenshots/pas1_smtp.png) | ![Confirmed](docs/screenshots/pas2_confirmation.png) |
-
-> New accounts require email confirmation before first login. Email is sent via SMTP (Papercut used for local dev). After clicking the confirmation link, the account is activated.
