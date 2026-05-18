@@ -5,7 +5,7 @@
 
   *Manage employee leave requests with role-based workflows.*
 
-  ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet) ![EF Core](https://img.shields.io/badge/EF%20Core-10.0-512BD4) ![NUnit](https://img.shields.io/badge/tests-NUnit-green) ![License](https://img.shields.io/badge/license-MIT-blue)
+  ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet) ![EF Core](https://img.shields.io/badge/EF%20Core-10.0-512BD4) ![NUnit](https://img.shields.io/badge/tests-NUnit-green)  ![Status](https://img.shields.io/badge/status-demo-orange?style=flat-square)
 </div>
 
 ---
